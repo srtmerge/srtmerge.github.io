@@ -1,0 +1,381 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Subtitle Merger</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1>Subtitles merger</h1>
+      </div>
+      <p class="lead">This is a tool to combine srt subtitle files into one.</p>
+
+
+      <div id='add_files_block' class='well'>
+        <form action='#' id='add_files_form' class='form-inline'>
+          <div class="form-group">
+            <!-- <label for="srt_file">SRT file</label> -->
+            <input type="file" id="srt_file" accept='.srt'>
+            <!-- <p class="help-block">Add SRT file here.</p> -->
+          </div>
+
+          <select class="form-control" id='color_select'>
+            <option value="">Default (white)</option>
+            <option value="777777">Grey</option>
+          </select>
+
+          <button id='add_file_button' type="submit" class="btn btn-default" disabled='disabled'>Add file</button>
+        </form>
+      </div>
+
+      <div id='files_list_block' class='well'>
+        <table class='table table-condensed'>
+          <thead>
+            <tr>
+              <th>File name</th>
+              <th>Color</th>
+              <th>Subtitle sample from file</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id='empty_file_in_list'>
+              <td colspan='3'>No files added yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id='result_file_block' class='well'>
+        <form action='#' id='download_result_file_form' class='form-inline'>
+          <div class="form-group">
+            <label for="result_filename">Merged file name: </label>
+            <input id="result_filename">
+            <!-- <p class="help-block">Add SRT file here.</p> -->
+          </div>
+
+          <button type="submit" class="btn btn-default" disabled='disabled'>Download</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      /*! sprintf-js | Alexandru Marasteanu <hello@alexei.ro> (http://alexei.ro/) | BSD-3-Clause */
+      !function(a){function b(){var a=arguments[0],c=b.cache;return c[a]&&c.hasOwnProperty(a)||(c[a]=b.parse(a)),b.format.call(null,c[a],arguments)}function c(a){return Object.prototype.toString.call(a).slice(8,-1).toLowerCase()}function d(a,b){return Array(b+1).join(a)}var e={not_string:/[^s]/,number:/[diefg]/,json:/[j]/,not_json:/[^j]/,text:/^[^\x25]+/,modulo:/^\x25{2}/,placeholder:/^\x25(?:([1-9]\d*)\$|\(([^\)]+)\))?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-gijosuxX])/,key:/^([a-z_][a-z_\d]*)/i,key_access:/^\.([a-z_][a-z_\d]*)/i,index_access:/^\[(\d+)\]/,sign:/^[\+\-]/};b.format=function(a,f){var g,h,i,j,k,l,m,n=1,o=a.length,p="",q=[],r=!0,s="";for(h=0;o>h;h++)if(p=c(a[h]),"string"===p)q[q.length]=a[h];else if("array"===p){if(j=a[h],j[2])for(g=f[n],i=0;i<j[2].length;i++){if(!g.hasOwnProperty(j[2][i]))throw new Error(b("[sprintf] property '%s' does not exist",j[2][i]));g=g[j[2][i]]}else g=j[1]?f[j[1]]:f[n++];if("function"==c(g)&&(g=g()),e.not_string.test(j[8])&&e.not_json.test(j[8])&&"number"!=c(g)&&isNaN(g))throw new TypeError(b("[sprintf] expecting number but found %s",c(g)));switch(e.number.test(j[8])&&(r=g>=0),j[8]){case"b":g=g.toString(2);break;case"c":g=String.fromCharCode(g);break;case"d":case"i":g=parseInt(g,10);break;case"j":g=JSON.stringify(g,null,j[6]?parseInt(j[6]):0);break;case"e":g=j[7]?g.toExponential(j[7]):g.toExponential();break;case"f":g=j[7]?parseFloat(g).toFixed(j[7]):parseFloat(g);break;case"g":g=j[7]?parseFloat(g).toPrecision(j[7]):parseFloat(g);break;case"o":g=g.toString(8);break;case"s":g=(g=String(g))&&j[7]?g.substring(0,j[7]):g;break;case"u":g>>>=0;break;case"x":g=g.toString(16);break;case"X":g=g.toString(16).toUpperCase()}e.json.test(j[8])?q[q.length]=g:(!e.number.test(j[8])||r&&!j[3]?s="":(s=r?"+":"-",g=g.toString().replace(e.sign,"")),l=j[4]?"0"===j[4]?"0":j[4].charAt(1):" ",m=j[6]-(s+g).length,k=j[6]&&m>0?d(l,m):"",q[q.length]=j[5]?s+g+k:"0"===l?s+k+g:k+s+g)}return q.join("")},b.cache={},b.parse=function(a){for(var b=a,c=[],d=[],f=0;b;){if(null!==(c=e.text.exec(b)))d[d.length]=c[0];else if(null!==(c=e.modulo.exec(b)))d[d.length]="%";else{if(null===(c=e.placeholder.exec(b)))throw new SyntaxError("[sprintf] unexpected placeholder");if(c[2]){f|=1;var g=[],h=c[2],i=[];if(null===(i=e.key.exec(h)))throw new SyntaxError("[sprintf] failed to parse named argument key");for(g[g.length]=i[1];""!==(h=h.substring(i[0].length));)if(null!==(i=e.key_access.exec(h)))g[g.length]=i[1];else{if(null===(i=e.index_access.exec(h)))throw new SyntaxError("[sprintf] failed to parse named argument key");g[g.length]=i[1]}c[2]=g}else f|=2;if(3===f)throw new Error("[sprintf] mixing positional and named placeholders is not (yet) supported");d[d.length]=c}b=b.substring(c[0].length)}return d};var f=function(a,c,d){return d=(c||[]).slice(0),d.splice(0,0,a),b.apply(null,d)};"undefined"!=typeof exports?(exports.sprintf=b,exports.vsprintf=f):(a.sprintf=b,a.vsprintf=f,"function"==typeof define&&define.amd&&define(function(){return{sprintf:b,vsprintf:f}}))}("undefined"==typeof window?this:window);
+
+      $(function() {
+        window.srt = {};
+        window.srt.files = [];
+        window.srt.result = {};
+
+        function refreshAddFileButtonDisabled() {
+          var fileInput = document.getElementById('srt_file');
+          $('#add_file_button').prop("disabled", fileInput.files.length == 0);
+        };
+
+        function AddFileToTable(fileInfo) {
+          $('#empty_file_in_list').hide();
+
+          var fname = fileInfo.file.name;
+          var colorName = fileInfo.colorName;
+          var sample = fileInfo.data[Math.floor(Math.random() * fileInfo.data.length)].content;
+          var row = "<tr class='uploaded_file'><td>" + fname + "</td><td>" + colorName + "</td><td>" + sample.replace("\n", "<br />") + "</td></tr>";
+          $('#files_list_block tbody').append(row);
+        };
+
+        function CheckDownloadButtonDisabled() {
+          $('#result_file_block button[type=submit]').prop("disabled", window.srt.files.length < 2);
+        };
+
+        function ParseTime(s) {
+          var times = s.match(/^(\d{2}):(\d{2}):(\d{2}),(\d{3})/)
+          var total = (parseInt(times[1]) * 3600) + (parseInt(times[2]) * 60) + (parseInt(times[3])) + (parseInt(times[4]) * 0.001);
+          return total;
+        }
+
+        function ParseTimes(s) {
+          var strings = s.split(" --> ");
+          return [ParseTime(strings[0]), ParseTime(strings[1])]
+        }
+
+        function ParseSrtFile(data, fileindex) {
+          var lines = data.split('\n');
+          var state = 1;
+          var srt_lines = [];
+          var time_from = null;
+          var time_to = null;
+          var content = [];
+
+          for(var i = 0; i < lines.length; i++){
+            s = lines[i];
+
+            switch(state) {
+
+              // Start, looking for first subtitle
+              case 1:
+
+                // Blank line: next=1
+                if (s == "") {
+                  break;
+                }
+
+                // Line number: next=2
+                if (/^\d+$/.test(s)) {
+                  state = 2;
+                  break;
+                }
+
+                // Anything else: bail
+                break;
+
+
+              // Want timestamps
+              case 2:
+                content = [];
+                time_from = null;
+                time_to = null;
+
+                // Timestamps line: next=3, store timestamps
+                if (/^\d{2}:\d{2}:\d{2},\d{3} --> \d\d:\d\d:\d\d,\d{3}/.test(s)) {
+                  var times = ParseTimes(s);
+                  time_from = times[0];
+                  time_to = times[1];
+
+                  state = 3;
+                  break;
+                }
+
+                // Anything else: bail
+                break;
+
+
+              // Reading subtitle, first line of text
+              case 3:
+
+                // Blank line: next=5
+                if (s == "") {
+                  state = 5;
+                  break;
+                }
+
+                // Anything else: next=4, append line text to current subtitle text
+                state = 4;
+                content.push(s);
+                break;
+
+
+              // Reading subtitle, following line of text
+              case 4:
+
+                // Blank line: next=5
+                if (s == "") {
+                  state = 5;
+                  break;
+                }
+
+                // Anything else: next=4, append line text to current subtitle text
+                state = 4;
+                content.push(s);
+                break;
+
+
+              // Reading subtitle, on blank line
+              case 5:
+
+                // Blank line: next=5, append line break to current subtitle text
+                if (s == "") {
+                  state = 5;
+                  content.push(s);
+                  break;
+                }
+
+                // Line number: next=2
+                if (/^\d+$/.test(s)) {
+                  state = 2;
+                  srt_lines.push({from: time_from, to: time_to, content: content.join("\n"), fileindex: fileindex});
+                  break;
+                }
+
+                // Anything else: next=4, append two line breaks and line text to current subtitle text
+                state = 4
+                content.push(s);
+                break;
+            }
+
+          }
+
+          // EOF: complete. build last srt line.
+          srt_lines.push({from: time_from, to: time_to, content: content.join("\n"), fileindex: fileindex});
+
+          return srt_lines;
+        }
+
+        function AddFile() {
+          var form = $('#add_files_block');
+          var colorSelect = form.find('#color_select option:selected');
+
+          var file = document.getElementById('srt_file').files[0];
+          var reader = new FileReader();
+          var fileInfo = {file: file, color: colorSelect.val(), colorName: colorSelect.text()};
+
+          reader.onload = function(progressEvent){
+            var fileindex = $('#files_list_block tbody tr.uploaded_file').length;
+            fileInfo.data = ParseSrtFile(this.result, fileindex);
+
+            window.srt.files.push(fileInfo);
+            AddFileToTable(fileInfo);
+
+            SuggestOutputFileName(file);
+
+            CheckDownloadButtonDisabled();
+          };
+          reader.readAsText(file);
+        };
+
+        function SuggestOutputFileName(file) {
+          fname = $('#result_filename');
+          if (fname.val() == "") {
+            fname.val(file.name.replace('.srt', '.merged.srt'))
+          }
+        }
+
+        function srtTimeString(t) {
+          var ms = sprintf("%.3f", t % 1).replace('0.', '');
+          var result = sprintf("%02d:%02d:%02d,%s", t / 3600, (t % 3600) / 60, t % 60, ms);
+          return result;
+        }
+
+        function recordToText(num, record) {
+          ret = []
+          ret.push(num);
+          var times = [srtTimeString(record.from), srtTimeString(record.to)].join(" --> ");
+          ret.push(times);
+          ret.push(record.content);
+          return ret.join("\n");
+        };
+
+        function coloredText(rec) {
+          var color = window.srt.files[rec.fileindex].color;
+          if (color == "") {
+            return rec.content;
+          } else {
+            return "<font color='" + color + "'>" + rec.content + "</font>";
+          }
+        };
+
+        function getPartsForPoint(all_parts, point) {
+          var parts = [];
+
+          all_parts.forEach(function(p) {
+            if (p.from <= point && p.to > point) {
+              var part_dup = JSON.parse(JSON.stringify(p));
+              parts.push(part_dup);
+            }
+
+          });
+
+          return parts;
+        };
+
+        function GetMergedFileData() {
+          var data = [];
+          var points = new Set();
+
+          window.srt.files.forEach(function(file){
+            file.data.forEach(function(record){
+              data.push(record);
+              points.add(record.from);
+              points.add(record.to);
+            });
+          });
+
+          var points = Array.from(points).sort(function(a,b){ return a - b; });
+
+          var new_parts = [];
+
+          points.forEach(function(point){
+            var parts = getPartsForPoint(data, point);
+            if (parts.length == 0) {
+              return;
+            }
+
+            var last_part = null;
+            if (new_parts.length > 0) {
+              last_part = new_parts[new_parts.length-1];
+            }
+
+            if (last_part) {
+              last_part.to = Math.min(last_part.to, point);
+            }
+
+            var new_part = {};
+            if (parts.length == 1) {
+              new_parts.push({from: point, to: parts[0].to, content: coloredText(parts[0])});
+              return;
+            }
+
+            var to = parts[0].to;
+            parts.forEach(function(p){if (p.to < to) {to = p.to;}});
+
+            parts = parts.sort(function(a, b) {
+              return a.fileindex - b.fileindex;
+            });
+
+            var contents = parts.map(function(t){
+              return coloredText(t);
+            });
+
+            new_parts.push({from: point, to: to, content: contents.join("\n")});
+          });
+
+          var z = 0;
+          var ret = new_parts.map(function(item){
+            z++;
+            return recordToText(z, item);
+          });
+
+          window.srt.result = new_parts;
+
+          return ret.join("\n\n");
+        };
+
+        function DownloadFileFromMemory(filename, text) {
+          var element = document.createElement('a');
+          element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+          element.setAttribute('download', filename);
+
+          element.style.display = 'none';
+          document.body.appendChild(element);
+
+          element.click();
+
+          document.body.removeChild(element);
+        }
+
+        $('#srt_file').on('change', function(e) {
+          refreshAddFileButtonDisabled();
+        });
+
+        $('#add_files_block form').on('submit', function(e) {
+          e.preventDefault();
+          AddFile();
+          this.reset();
+          refreshAddFileButtonDisabled();
+        });
+
+        $('#download_result_file_form').on('submit', function(e) {
+          e.preventDefault();
+          var data = GetMergedFileData();
+          fname = $('#result_filename').val();
+          DownloadFileFromMemory(fname, data);
+        });
+      });
+    </script>
+  </body>
+</html>
