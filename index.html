@@ -22,7 +22,7 @@
         <form action='#' id='add_files_form' class='form-inline'>
           <div class="form-group">
             <!-- <label for="srt_file">SRT file</label> -->
-            <input type="file" id="srt_file" accept='.srt'>
+            <input type="file" id="srt_file" accept='.srt' multiple>
             <!-- <p class="help-block">Add SRT file here.</p> -->
           </div>
 
@@ -219,23 +219,23 @@
         function AddFile() {
           var form = $('#add_files_block');
           var colorSelect = form.find('#color_select option:selected');
-
-          var file = document.getElementById('srt_file').files[0];
-          var reader = new FileReader();
-          var fileInfo = {file: file, color: colorSelect.val(), colorName: colorSelect.text()};
-
-          reader.onload = function(progressEvent){
-            var fileindex = $('#files_list_block tbody tr.uploaded_file').length;
-            fileInfo.data = ParseSrtFile(this.result, fileindex);
-
-            window.srt.files.push(fileInfo);
-            AddFileToTable(fileInfo);
-
-            SuggestOutputFileName(file);
-
-            CheckDownloadButtonDisabled();
-          };
-          reader.readAsText(file);
+          Array.from(document.getElementById('srt_file').files).forEach(file => {
+            var reader = new FileReader();
+            var fileInfo = {file: file, color: colorSelect.val(), colorName: colorSelect.text()};
+            
+            reader.onload = function(progressEvent){
+              var fileindex = $('#files_list_block tbody tr.uploaded_file').length;
+              fileInfo.data = ParseSrtFile(this.result, fileindex);
+              
+              window.srt.files.push(fileInfo);
+              AddFileToTable(fileInfo);
+              
+              SuggestOutputFileName(file);
+              
+              CheckDownloadButtonDisabled();
+            };
+            reader.readAsText(file);
+          });
         };
 
         function SuggestOutputFileName(file) {
